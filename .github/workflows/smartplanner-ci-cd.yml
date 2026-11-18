@@ -17,6 +17,7 @@ permissions:
   contents: read
 
 jobs:
+
   build:
     name: Build and test
     runs-on: ubuntu-latest
@@ -35,13 +36,37 @@ jobs:
       - name: Build with Maven
         run: ./mvnw --batch-mode --no-transfer-progress clean verify
 
+      - name: Prepare deployment package
+        shell: bash
+        run: |
+          mkdir -p deploy-package
+
+          JAR_FILE=$(find target -maxdepth 1 -type f \
+            -name '*.jar' \
+            ! -name '*-plain.jar' \
+            | head -n 1)
+
+          if [ -z "$JAR_FILE" ]; then
+            echo "ERROR: No executable JAR found!"
+            ls -lah target/
+            exit 1
+          fi
+
+          echo "Found JAR: $JAR_FILE"
+
+          cp "$JAR_FILE" deploy-package/app.jar
+
+          echo "Deployment package:"
+          ls -lah deploy-package/
+
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: smartplanner-jar
-          path: target/*.jar
+          path: deploy-package/app.jar
           if-no-files-found: error
           retention-days: 1
+
 
   deploy:
     name: Deploy to Azure
@@ -60,9 +85,15 @@ jobs:
           name: smartplanner-jar
           path: ./deploy-package
 
+      - name: Verify deployment package
+        run: |
+          echo "Checking deployment package..."
+          ls -lah ./deploy-package/
+          test -f ./deploy-package/app.jar
+
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ vars.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./deploy-package/*.jar
+          package: ./deploy-package/app.jar
