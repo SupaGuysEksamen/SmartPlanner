@@ -1,4 +1,12 @@
 package dk.ek.smartplanner.repository;
 
-public interface CrudRepository {
+public interface CrudRepository <T> {
+
+    void create(T entity);
+
+    T findById(int id);
+
+    void update(T entity);
+
+    void delete(int id);
 }
