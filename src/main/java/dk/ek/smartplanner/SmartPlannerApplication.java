@@ -1,4 +1,4 @@
-package org.example.smartplanner;
+package dk.ek.smartplanner;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
