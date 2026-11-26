@@ -16,9 +16,9 @@ public class UserRepositoryImpl implements UserRepository {
     public UserRepositoryImpl (JdbcTemplate jdbcTemplate) {this.jdbcTemplate = jdbcTemplate;}
 
     public void create(User user){
-        String sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO users (name, email, passwordHash, role) VALUES (?, ?, ?,?)";
 
-        jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword());
+        jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPasswordHash(), user.getRole());
     }
 
     public User findByEmail(String email) {
