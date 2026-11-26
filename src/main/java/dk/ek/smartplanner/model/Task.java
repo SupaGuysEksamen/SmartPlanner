@@ -32,7 +32,7 @@ public class Task {
         this.parentTaskId = parentTaskId;
     }
 
-    // Getters
+    /// Getters
     public int getId() {
         return id;
     }
@@ -61,7 +61,7 @@ public class Task {
         return parentTaskId;
     }
 
-    // Setters
+    /// Setters
     public void setId(int id) {
         this.id = id;
     }
