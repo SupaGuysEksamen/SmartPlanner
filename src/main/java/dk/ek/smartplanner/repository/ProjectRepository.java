@@ -4,7 +4,7 @@ import dk.ek.smartplanner.model.Project;
 
 import java.util.List;
 
-public interface ProjectRepository {
+public interface ProjectRepository extends CrudRepository<Project> {
 
     List<Project> findByParentProjectId(int projectId);
 
